@@ -11,7 +11,6 @@ comments: false
 
 ### 联系方式
 
-* 手机：181****5093
 * 邮箱：wangxin0110@hotmail.com
 * 微信/QQ：1340297893
 

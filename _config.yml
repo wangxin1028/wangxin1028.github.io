@@ -81,3 +81,4 @@ deploy:
   type: git
   repo: https://github.com/wangxin1028/wangxin1028.github.io.git
   branch: master
+  

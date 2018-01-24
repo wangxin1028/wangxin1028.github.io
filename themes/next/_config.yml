@@ -246,6 +246,9 @@ post_wordcount:
 #alipay: /images/alipay.jpg
 #bitcoin: /images/bitcoin.png
 
+reward_comment: 坚持原创技术分享，您的支持将鼓励我继续创作！
+alipay: /images/alipay.jpg
+
 # Declare license on posts
 post_copyright:
   enable: false
@@ -400,19 +403,19 @@ valine:
 # Introduction: https://imsun.net/posts/gitment-introduction/
 # You can get your Github ID from https://api.github.com/users/<Github username>
 gitment:
-  enable: false
-  mint: true # RECOMMEND, A mint on Gitment, to support count, language and proxy_gateway
+  enable: true
+  #mint: true # RECOMMEND, A mint on Gitment, to support count, language and proxy_gateway
   count: true # Show comments count in post meta area
   lazy: false # Comments lazy loading with a button
-  cleanly: false # Hide 'Powered by ...' on footer, and more
+  #cleanly: false # Hide 'Powered by ...' on footer, and more
   language: # Force language, or auto switch by theme
-  github_user: # MUST HAVE, Your Github ID
-  github_repo: # MUST HAVE, The repo you use to store Gitment comments
-  client_id: # MUST HAVE, Github client id for the Gitment
-  client_secret: # EITHER this or proxy_gateway, Github access secret token for the Gitment
-  proxy_gateway: # Address of api proxy, See: https://github.com/aimingoo/intersect
-  redirect_protocol: # Protocol of redirect_uri with force_redirect_protocol when mint enabled
-
+  github_user: wangxin1028 # MUST HAVE, Your Github ID
+  github_repo: Horse # MUST HAVE, The repo you use to store Gitment comments
+  client_id: 28d1fb4365a675977abe # MUST HAVE, Github client id for the Gitment
+  client_secret: 7f1fcf1ff86f746cf2c1ce4175b2975c599b3b39 # EITHER this or proxy_gateway, Github access secret token for the Gitment
+  #proxy_gateway: # Address of api proxy, See: https://github.com/aimingoo/intersect
+  #redirect_protocol: # Protocol of redirect_uri with force_redirect_protocol when mint enabled
+  
 # Baidu Share
 # Available value:
 #    button | slide
@@ -810,6 +813,3 @@ images: images
 
 # Theme version
 version: 5.1.4
-
-reward_comment: 坚持原创技术分享，您的支持将鼓励我继续创作！
-alipay: /images/alipay.jpg

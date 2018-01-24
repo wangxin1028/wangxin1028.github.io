@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在介绍Lambda表达式之前，我们先来看只有单个方法的Interface（通常我们称之为回调接口）： 123public interface OnClickListener &amp;#123;	void onClick(View v);&amp;#125; 我们是这样使用它的： 123456button.setOnClickListener(new View.OnClickListener() &amp;#123;">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java8新特性第1章(Lambda表达式)">
+<meta property="og:url" content="https://wangxin1028.github.io/2017/02/05/2017-02-05-Java8新特性第1章-Lambda表达式/index.html">
+<meta property="og:site_name" content="Horse">
+<meta property="og:description" content="在介绍Lambda表达式之前，我们先来看只有单个方法的Interface（通常我们称之为回调接口）： 123public interface OnClickListener &amp;#123;	void onClick(View v);&amp;#125; 我们是这样使用它的： 123456button.setOnClickListener(new View.OnClickListener() &amp;#123;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-24T06:20:18.299Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java8新特性第1章(Lambda表达式)">
+<meta name="twitter:description" content="在介绍Lambda表达式之前，我们先来看只有单个方法的Interface（通常我们称之为回调接口）： 123public interface OnClickListener &amp;#123;	void onClick(View v);&amp;#125; 我们是这样使用它的： 123456button.setOnClickListener(new View.OnClickListener() &amp;#123;">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wangxin1028.github.io/2017/02/05/2017-02-05-Java8新特性第1章-Lambda表达式/"/>
+
+
+
+
+
+  <title>Java8新特性第1章(Lambda表达式) | Horse</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Horse</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">不以物喜,不以己悲</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wangxin1028.github.io/2017/02/05/2017-02-05-Java8新特性第1章-Lambda表达式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Horse">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java8新特性第1章(Lambda表达式)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-05T14:24:30+08:00">
+                2017-02-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在介绍Lambda表达式之前，我们先来看只有单个方法的Interface（通常我们称之为回调接口）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnClickListener</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们是这样使用它的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">button.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">		v.setText(<span class="string">"lalala"</span>);</span><br><span class="line">   	&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这种回调模式在各种框架中非常流行,但是像上面这样的匿名内部类并不是一个好的选择，因为：</p>
+<ul>
+<li>语法冗余；</li>
+<li>匿名内部类中的this指针和变量容易产生误解；</li>
+<li>无法捕获非final局部变量；</li>
+<li>非静态内部类默认持有外部类的引用，部分情况下会导致外部类无法被GC回收，导致内存泄露。</li>
+</ul>
+<a id="more"></a>
+<p>令人高兴的是Java8为我们带来了Lambda,下面我们看看利用Lambda如何实现上面的功能：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">button.setOnClickListener(v -&gt; v.setText(<span class="string">"lalala"</span>));</span><br></pre></td></tr></table></figure>
+<p>怎么样？！五行代码用一行就搞定了！！！</p>
+<blockquote>
+<p>在这里补充个概念<code>函数式接口</code>；前面提到的OnClickListener接口只有一个方法，Java中大多数回调接口都有这个特征：比如Runnable和Comparator；我们把这些只拥有一个方法的接口称之为<code>函数式接口</code>。</p>
+</blockquote>
+<h2 id="一、Lambda表达式"><a href="#一、Lambda表达式" class="headerlink" title="一、Lambda表达式"></a>一、Lambda表达式</h2><p>匿名内部类最大的问题在于其冗余的语法，比如前面的OnClickListener中五行代码仅有一行是在执行任务。Lambda表达式是匿名方法，前面我们也看到了它用极其轻量的语法解决了这一问题。</p>
+<p>下面给大家看几个Lambda表达式的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">int</span> x, <span class="keyword">int</span> y) -&gt; x + y                      <span class="comment">//接收x和y两个整形参数并返回他们的和</span></span><br><span class="line">() -&gt; <span class="number">66</span>                                     <span class="comment">//不接收任何参数直接返回66</span></span><br><span class="line">(String name) -&gt; &#123;System.out.println(name);&#125; <span class="comment">//接收一个字符串然后打印出来</span></span><br><span class="line">(View view) -&gt; &#123;view.setText(<span class="string">"lalala"</span>);&#125;     <span class="comment">//接收一个View对象并调用setText方法</span></span><br></pre></td></tr></table></figure>
+<p>Lambda表达式语法由<code>参数列表</code>、<code>-&gt;</code>和<code>函数体</code>组成。函数体既可以是一个表达式也可以是一个代码块。</p>
+<ul>
+<li><strong>表达式</strong>：表达式会被执行然后返回结果。它简化掉了<code>return</code>关键字。</li>
+<li><strong>代码块</strong>：顾名思义就是一坨代码，和普通方法中的语句一样。</li>
+</ul>
+<!--lambda经常出现在嵌套环境中，如作为方法的参数：
+
+    Runnable runnable = () -> {doSomething();};
+    new Thread(runnable);
+
+    //也可以这样写
+    new Thread(() -> {doSomething();});-->
+<h2 id="二、目标类型"><a href="#二、目标类型" class="headerlink" title="二、目标类型"></a>二、目标类型</h2><p>通过前面的例子我们可以看到，lambda表达式没有名字，那我们怎么知道它的类型呢？答案是通过上下文推导而来的。例如，下面的表达式的类型是<code>OnClickListener</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">OnClickListener listener = (View v) -&gt; &#123;v.setText(<span class="string">"lalala"</span>);&#125;;</span><br></pre></td></tr></table></figure>
+<p>这就意味着同样的lambda表达式在不同的上下文里有不同的类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Runnable runnable = () -&gt; doSomething();  <span class="comment">//这个表达式是Runnable类型的</span></span><br><span class="line">Callback callback = () -&gt; doSomething();  <span class="comment">//这个表达式是Callback类型的</span></span><br></pre></td></tr></table></figure>
+<p>编译器利用lambda表达式所在的上下文所期待的类型来推导表达式的类型，这个<strong>被期待的类型</strong>被称为<code>目标类型</code>。lambda表达式只能出现在<strong>目标类型</strong>为<code>函数式接口</code>的上下文中。</p>
+<p>Lambda表达式的类型和目标类型的方法签名必须一致，编译器会对此做检查，一个lambda表达式要想赋值给目标类型<code>T</code>则必须满足下面所有的条件：</p>
+<ul>
+<li><code>T</code>是一个函数式接口</li>
+<li>lambda表达式的参数必须和<code>T</code>的方法参数在数量、类型和顺序上一致（一一对应）</li>
+<li>lambda表达式的返回值必须和<code>T</code>的方法的返回值一致或者是它的子类</li>
+<li>lambda表达式抛出的异常和<code>T</code>的方法的异常一致或者是它的子类</li>
+</ul>
+<p>由于目标类型是知道lambda表达式的参数类型，所以我们没必要把已知的类型重复一遍。也就是说lambda表达式的参数类型可以从目标类型获取：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//编译器可以推导出s1和s2是String类型</span></span><br><span class="line">Comparator&lt;String&gt; c = (s1, s2) -&gt; s1.compareTo(s2);</span><br><span class="line"><span class="comment">//当表达式的参数只有一个时括号也是可以省略的</span></span><br><span class="line">button.setOnClickListener(v -&gt; v.setText(<span class="string">"lalala"</span>));</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Java7中的泛型方法和&lt;&gt;构造器也是通过目标类型来进行类型推导的,如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;List&lt;Integer&gt; intList = Collections.emptyList&lt;&gt;();</span><br><span class="line">&gt;List&lt;String&gt; strList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="三、作用域"><a href="#三、作用域" class="headerlink" title="三、作用域"></a>三、作用域</h2><p>在内部类中使用变量名和this非常容易出错。内部类通过继承得到的成员变量（包括来说object的）可能会把外部类的成员变量覆盖掉，未做限制的this引用会指向内部类自己而非外部类。</p>
+<p>而lambda表达式的语义就十分简单：它不会从父类中继承任何变量，也不用引入新的作用域。lambda表达式的参数及函数体里面的变量和它外部环境的变量具有相同的语义（this关键字也是一样）。</p>
+<p>下面我们举个栗子吧!</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloLambda</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Runnable r1 = () -&gt; System.out.println(<span class="keyword">this</span>);</span><br><span class="line">    Runnable r2 = () -&gt; System.out.println(toString());</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello, lambda!"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> HelloLambda().r1.run();  </span><br><span class="line">        <span class="keyword">new</span> HelloLambda().r2.run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码最终会打印两个<code>Hello, lambda!</code>，与之相类似的内部类则会打印出类似<code>HelloLambda$1@32a890</code>和<code>HelloLambda$1@6b32098</code>这种出乎意料的字符串。</p>
+<p>总结：基于词法作用域的理念，lambda表达式不可以掩盖任何其所在上下文的局部变量。</p>
+<h2 id="四、变量捕获"><a href="#四、变量捕获" class="headerlink" title="四、变量捕获"></a>四、变量捕获</h2><p>在Java7中，编译器对内部类中引用的外部变量（即捕获的变量）要求非常严格：如果捕获的变量没有被声明为<code>final</code>就会产生一个编译错误。但是在Java8中放宽了这一限制–对于lambda表达式和内部类，允许在其中捕获那些符合有效只读的局部变量（如果一个局部变量在初始化后从未被修改过，那么它就是有效只读）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Runnable <span class="title">getRunnable</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">    String hello = <span class="string">"hello"</span>;</span><br><span class="line">    <span class="keyword">return</span> () -&gt; System.out.println(hello+<span class="string">","</span>+name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于<code>this</code>的引用以及通过<code>this</code>对未限定字段的引用和未限定方法的调用本质上都属于使用<code>final</code>局部变量。包含此类引用的lambda表达式相当于捕获了<code>this</code>实例。在其他情况下，lambda对象不会保留任何对<code>this</code>的应用。</p>
+<p>这个特性对内存管理是极好的：要知道在java中一个非静态内部类会默认持有外部类实例的强引用，这往往会造成内存泄露。而在lambda表达式中如果没有捕获外部类成员则不会保留对外部类实例的引用。</p>
+<p>不过尽管Java8放宽了对捕获变量的语法限制，但试图修改捕获变量的行为是被禁止的，比如下面这个例子就是非法的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sum  = <span class="number">0</span>;</span><br><span class="line">list.forEach(i -&gt; &#123;sum += i;&#125;);</span><br></pre></td></tr></table></figure>
+<p>为什么要禁止这种行为呢？因为这样的lambda表达式很容易引起<a href="https://zh.wikipedia.org/zh-cn/%E7%AB%B6%E7%88%AD%E5%8D%B1%E5%AE%B3" target="_blank" rel="noopener">race condition</a></p>
+<p>lambda表达式不支持修改捕获变量的另外一个原因是我们可以使用更好的方式来实现同样的效果：使用规约(condition)。java.util.stream包提供了各种规约操作，关于Java8中的<code>Stream API</code>我们放到下一章介绍。</p>
+<h2 id="五、方法引用"><a href="#五、方法引用" class="headerlink" title="五、方法引用"></a>五、方法引用</h2><p>lambda表达式允许我们定义一个匿名方法，并以函数式接口的方式使用它。Java8能够在已有的方法上实现同样的特性。</p>
+<p>方法引用和lambda表达式拥有相同的特性（他们都需要一个目标类型，并且需要被转化为函数式接口的实例）,不过我们不需要为方法引用提供方法体，我们可以直接通过方法名引用已有方法。</p>
+<p>以下面的代码为例，假设我们要按照<code>userName</code>排序</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String userName;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getUserName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userName;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">List&lt;User&gt; users = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">Comparator&lt;User&gt; comparator = Comparator.comparing(u -&gt; u.getUserName());</span><br><span class="line">Collections.sort(users, comparator);</span><br></pre></td></tr></table></figure>
+<p>我们可以用方法引用替换上面的lambda表达式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Comparator&lt;User&gt; comparator = Comparator.comparing(User::getUserName);</span><br></pre></td></tr></table></figure>
+<p>这里的<code>User::getUserName</code>被看做是lambda表达式的简写形式。尽管方法引用不一定会把代码变得更紧凑，但它拥有更明确的语义–如果我们想要调用的方法拥有一个名字，那么我们就可以通过方法名调用它。</p>
+<!--因为函数式接口的方法参数对应于隐式方法调用时的参数，所以被引用方法签名可以通过放宽类型，装箱以及组织到参数数组中的方式对其参数进行操作，就像在调用实际方法一样：
+
+    Consumer<Integer> b1 = System::exit;    // void exit(int status)
+    Consumer<String[]> b2 = Arrays:sort;    // void sort(Object[] a)
+    Consumer<String> b3 = MyProgram::main;  // void main(String... args)
+    Runnable r = Myprogram::mapToInt        // void main(String... args)-->
+<p>方法引用有很多种，它们的语法如下：</p>
+<ul>
+<li>静态方法引用：ClassName::methodName</li>
+<li>实例上的实例方法引用：instanceReference::methodName</li>
+<li>超类上的实例方法引用：super::methodName</li>
+<li>类型上的实例方法引用：ClassName::methodName</li>
+<li>构造方法引用：Class::new</li>
+<li>数组构造方法引用：TypeName[]::new</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Wang 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/05/2017-02-05-Java8新特性第2章-接口默认方法/" rel="prev" title="Java8新特性第2章(接口默认方法)">
+                Java8新特性第2章(接口默认方法) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Wang" />
+            
+              <p class="site-author-name" itemprop="name">Wang</p>
+              <p class="site-description motion-element" itemprop="description">技术分享和生活感悟</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wangxin1028" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5891331029/" target="_blank" title="新浪微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>新浪微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.douban.com/people/144129995/" target="_blank" title="豆瓣">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>豆瓣</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/wxtower/" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-facebook"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Lambda表达式"><span class="nav-number">1.</span> <span class="nav-text">一、Lambda表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、目标类型"><span class="nav-number">2.</span> <span class="nav-text">二、目标类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、作用域"><span class="nav-number">3.</span> <span class="nav-text">三、作用域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、变量捕获"><span class="nav-number">4.</span> <span class="nav-text">四、变量捕获</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、方法引用"><span class="nav-number">5.</span> <span class="nav-text">五、方法引用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'wangxin1028',
+            repo: 'Horse',
+            
+            oauth: {
+            
+            
+                client_secret: '7f1fcf1ff86f746cf2c1ce4175b2975c599b3b39',
+            
+                client_id: '28d1fb4365a675977abe'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'wangxin1028',
+            repo: 'Horse',
+            
+            oauth: {
+            
+            
+                client_secret: '7f1fcf1ff86f746cf2c1ce4175b2975c599b3b39',
+            
+                client_id: '28d1fb4365a675977abe'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
